@@ -1,10 +1,10 @@
 // Function to determine marker size based on earthquake magnitude
 function markerSize(feature) {
-    return Math.sqrt(Math.abs(feature.properties.mag)) * 5;
+    return Math.sqrt(Math.abs(feature.properties.mag)) * 3;
   }
   
   // Function to determine marker color based on earthquake magnitude
-  var colors = ["#c6ffdd", "#dfedbe", "#eede9f", "#ecc089", "#eda287", "#f7797d"]
+  var colors = ["#c6ffdd", "#dfebbe", "#eede6f", "#ecc076", "#eda187", "#f7779d"]
   function fillColor(feature) {
     var mag = feature.properties.mag;
     if (mag <= 1) {
@@ -27,7 +27,7 @@ function markerSize(feature) {
     }
   }
   
-  // Define variables for base layers
+  //base layers
   var attribution = "Map data &copy; <a href=\"https://www.openstreetmap.org/\">OpenStreetMap</a> contributors, <a href=\"https://creativecommons.org/licenses/by-sa/2.0/\">CC-BY-SA</a>, Imagery © <a href=\"https://www.mapbox.com/\">Mapbox</a>";
   
   var satelliteMap = L.tileLayer("https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}", {
@@ -37,33 +37,17 @@ function markerSize(feature) {
     accessToken: API_KEY
   });
   
-  var lightMap = L.tileLayer("https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}", {
-    attribution: attribution,
-    maxZoom: 18,
-    id: "mapbox.light",
-    accessToken: API_KEY
-  });
-  
-  var outdoorsMap = L.tileLayer("https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}", {
-    attribution: attribution,
-    maxZoom: 18,
-    id: "mapbox.outdoors",
-    accessToken: API_KEY
-  });
-  
   // Create a baseMaps object
   var baseMaps = {
     "Satellite": satelliteMap,
-    "Grayscale": lightMap,
-    "Outdoors": outdoorsMap
   };
   
   // Store API endpoint as queryUrl
   var queryUrl = "https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_week.geojson";
   
-  var platesPath = "GeoJSON/PB2002_boundaries.json";
+  var platesPath = "GeoJSON/PB2010_boundaries.json";
   
-  // Perform a GET request to the query URL
+  // GET request to the query URL
   d3.json(queryUrl, function(data) {
     d3.json(platesPath, function(platesData) {
   
@@ -117,28 +101,14 @@ function markerSize(feature) {
         zoom: 3,
         layers: [satelliteMap, plates, earthquakes]
       });
-  
-      // Add the layer control to the map
-      L.control.layers(baseMaps, overlayMaps, {
-        collapsed: false
-      }).addTo(map);
-  
       // Setting up the legend
-      var legend = L.control({ position: "bottomright" });
+      var legend = L.control({ position: "bottomleft" });
       legend.onAdd = function() {
         var div = L.DomUtil.create("div", "info legend");
         var limits = ["0-1", "1-2", "2-3", "3-4", "4-5", "5+"];
         var labelsColor = [];
         var labelsText = [];
-  
-        // Add min & max
-        limits.forEach(function(limit, index) {
-          labelsColor.push(`<li style="background-color: ${colors[index]};"></li>`); // <span class="legend-label">${limits[index]}</span>
-          labelsText.push(`<span class="legend-label">${limits[index]}</span>`)
-        });
-  
-        var labelsColorHtml =  "<ul>" + labelsColor.join("") + "</ul>";
-        var labelsTextHtml = `<div id="labels-text">${labelsText.join("<br>")}</div>`;
+
   
         var legendInfo = "<h4>Earthquake<br>Magnitude</h4>" +
           "<div class=\"labels\">" + labelsColorHtml + labelsTextHtml

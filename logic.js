@@ -93,7 +93,7 @@ function markerSize(feature) {
   
       // Define a map object
       var map = L.map("map", {
-        center: [37.09, -95.71],
+        center: [38.69, 16.30],
         zoom: 3,
         layers: [satelliteMap, plates, earthquakes]
       });
@@ -110,8 +110,24 @@ function markerSize(feature) {
           "<div class=\"labels\">" + labelsColorHtml + labelsTextHtml
           "</div>";
         div.innerHTML = legendInfo;
+
+        // Add min & max
+      limits.forEach(function(limit, index) {
+        labelsColor.push(`<li style="background-color: ${colors[index]};"></li>`); // <span class="legend-label">${limits[index]}</span>
+        labelsText.push(`<span class="legend-label">${limits[index]}</span>`)
+      });
+
+      var labelsColorHtml =  "<ul>" + labelsColor.join("") + "</ul>";
+      var labelsTextHtml = `<div id="labels-text">${labelsText.join("<br>")}</div>`;
+
+      var legendInfo = "<h4>Earthquake<br>Magnitude</h4>" +
+        "<div class=\"labels\">" + labelsColorHtml + labelsTextHtml
+        "</div>";
+      div.innerHTML = legendInfo;
   
         return div;
+
+      
       };
   
       // Adding legend to the map

@@ -1,6 +1,6 @@
 // Function to determine marker size based on earthquake magnitude
 function markerSize(feature) {
-    return Math.sqrt(Math.abs(feature.properties.mag)) * 3;
+    return Math.sqrt(Math.abs(feature.properties.mag)) *5;
   }
   
   // Function to determine marker color based on earthquake magnitude
@@ -50,10 +50,6 @@ function markerSize(feature) {
   // GET request to the query URL
   d3.json(queryUrl, function(data) {
     d3.json(platesPath, function(platesData) {
-  
-      // console.log(data.features);
-      console.log(platesData);
-  
       // Earthquake layer
       var earthquakes = L.geoJSON(data, {
   
@@ -61,12 +57,12 @@ function markerSize(feature) {
         pointToLayer: function (feature, latlng) {
           var geojsonMarkerOptions = {
             radius: 8,
-            fillColor: "#ff7800",
+            fillColor: "#f7779d",
             radius: markerSize(feature),
             fillColor: fillColor(feature),
             color: "#000",
             weight: 1,
-            opacity: 1,
+            opacity: 2,
             fillOpacity: 1
           };
           return L.circleMarker(latlng, geojsonMarkerOptions);
